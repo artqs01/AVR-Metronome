@@ -1,5 +1,6 @@
 #ifndef LCD_COM_H
 #define LCD_COM_H
+
 #include <avr/io.h>
 
 #define LCD_PORT PORTC

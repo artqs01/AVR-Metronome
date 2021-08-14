@@ -2,7 +2,6 @@
 #include "lcd_com.h"
 
 #include <avr/interrupt.h>
-#include <avr/fuse.h>
 
 void beep_init()
 {
@@ -27,7 +26,6 @@ void display_set_default()
 void set_tempo(uint16_t bpm)
 {
 	OCR1A = F_CPU * 60 / (bpm * 1024ul) - 1;
-	TCNT1 = 
 }
 
 void tempo_change_mode()

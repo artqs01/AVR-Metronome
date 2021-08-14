@@ -25,7 +25,7 @@ ISR(TIMER1_COMPB_vect)										// przerwanie generowania dźwięku
 	TCCR0A &= ~(1 << COM0A0);
 }
 
-int main(void)
+int main()
 {
 	DDRC = 0xff;
 	DDRB = 0xff;

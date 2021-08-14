@@ -1,4 +1,5 @@
-#pragma once
+#ifndef METRONOME_H
+#define METRONOME_H
 
 #include <avr/io.h>
 
@@ -12,3 +13,5 @@ void beep_init();
 void display_set_default();
 void set_tempo(uint16_t tempo);
 void tempo_change_mode();
+
+#endif

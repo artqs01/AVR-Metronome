@@ -1,5 +1,6 @@
 {
-	"files.associations": {
-		"metronome.h": "c"
-	}
+    "files.associations": {
+        "interrupt.h": "c",
+        "lcd_com.h": "c"
+    }
 }
