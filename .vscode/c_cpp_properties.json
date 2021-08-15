@@ -13,7 +13,9 @@
             "intelliSenseMode": "linux-clang-x64",
             "compilerPath": "/usr/bin/avr-gcc",
             "compilerArgs": [
-                "-mmcu=atmega328p"
+                "-mmcu=atmega328p",
+                "-DF_CPU=20000000ul",
+                "-Os"
             ]
         }
     ],

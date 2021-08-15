@@ -38,7 +38,7 @@ void set_tempo(uint16_t bpm)
 	ticks_for_beep = F_CPU * 60 / bpm - 1;
 }
 
-void beep();
+void beep(uint8_t time_signature, uint8_t beat, uint8_t subdivisions, uint8_t cur_subdivision);
 
 ISR(TIMER2_COMPA_vect)
 {
@@ -46,7 +46,7 @@ ISR(TIMER2_COMPA_vect)
 	if (tick_count >= ticks_for_beep)
 	{
 		tick_count -= ticks_for_beep;
-		beep_flag = 1;
+		++beep_flag;
 	}
 }
 
@@ -55,20 +55,19 @@ int main()
 	DDRB = 3;
 
 	uint8_t time_signature = 4;
-	uint8_t beat;
+	uint8_t beat = 0;
 
 	uint8_t subdivisions = 1;
-	uint8_t cur_subdivision;
+	uint8_t cur_subdivision = 0;
 
 	metronome_init();
 	sei();
 
 	while (1)
 	{
-		if (beep_flag)
+		if (beep_flag--)
 		{
-			beep();
-			beep_flag = 0;
+			beep(time_signature, beat, subdivisions, cur_subdivision);
 		}
 	}
 }
