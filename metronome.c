@@ -27,8 +27,3 @@ void set_tempo(uint16_t bpm)
 {
 	OCR1A = F_CPU * 60 / (bpm * 1024ul) - 1;
 }
-
-void tempo_change_mode()
-{
-
-}

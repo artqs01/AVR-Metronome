@@ -40,7 +40,7 @@ int main()
 	display_set_default();
 	beep_init();
 	lcd_move_cursor_on_address(0, 14);
-	lcd_write_byte(1, 0xFF);
+	lcd_write_byte(1, 0xff);
 	sei();
 	
 	while (1)

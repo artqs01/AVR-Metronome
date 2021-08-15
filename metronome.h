@@ -9,9 +9,8 @@
 #define UP_BUTTON PIND & (1 << 4)
 #define RIGHT_BUTTON PIND & (1 << 5)
 
-void beep_init();
-void display_set_default();
-void set_tempo(uint16_t tempo);
-void tempo_change_mode();
+void metronome_init();
+void set_tempo(uint16_t bpm, uint8_t subdivisions);
+void beep(uint8_t time_signature, uint8_t beat, uint8_t subdivisions, uint8_t cur_subdivision);
 
 #endif
