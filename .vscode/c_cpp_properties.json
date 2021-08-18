@@ -15,7 +15,7 @@
             "compilerArgs": [
                 "-mmcu=atmega328p",
                 "-DF_CPU=20000000ul",
-                "-Os"
+                "-O3"
             ]
         }
     ],

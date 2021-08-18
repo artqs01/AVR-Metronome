@@ -1,29 +1,42 @@
-#include "metronome.h"
-#include "lcd_com.h"
-
+#include <avr/io.h>
+#include <avr/fuse.h>
+#include <util/delay.h>
 #include <avr/interrupt.h>
 
-void beep_init()
-{
-	TCCR1A = 0;
-	TCCR1C = 0;												// wyłączenie niepotrzebnych rejestrów
-	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10);		// ustawienie w rejestrze TCCR1 trybu "clear timer on compare match" oraz ustawienie prescalera na 1024
-	OCR1A = F_CPU * 60 / (60 * 1024ul) - 1;					// ustawienie tempa na 60 bpm
-	OCR1B = 750;											// ustawienie dlugosci sygnalu bitu
-	TIMSK1 = (1 << OCIE1A) | (1 << OCIE1B);					// włączenie przerwań dla włączenia sygnału metronomu i wyłączenia sygnału metronomu
+#include "beep.h"
 
-	TCCR0A = (1 << WGM01);									// ustawienie w rejestrze TCCR0 trybu "clear timer on compare match"
-	TCCR0B = (1 << CS02) | (1 << CS00);						// ustawienie prescalera Timera 0 na 1024
+FUSES = 
+{
+    0xdf, 0xd1, 0xff
+};
+
+ISR(TIMER2_COMPA_vect)
+{
+	isr_time_check();
 }
 
-void display_set_default()
+ISR(TIMER1_COMPA_vect)
 {
-	lcd_printf("Tempo: 60");
-	lcd_move_cursor_on_address(1, 0);
-	lcd_printf("Meter: 4/4");
+	TCCR0A &= ~(1 << COM0A0);
+	TIMER1_STOP;
 }
 
-void set_tempo(uint16_t bpm)
+int main()
 {
-	OCR1A = F_CPU * 60 / (bpm * 1024ul) - 1;
+	uint16_t bpm = 60;
+
+	uint8_t time_signature = 4;
+	uint8_t beat = 0;
+
+	uint8_t subdivisions = 1;
+	uint8_t cur_subdivision = 0;
+
+	metronome_init();
+	set_tempo(bpm, subdivisions);
+	sei();
+	
+	while (1)
+	{
+		beep_check(time_signature, &beat, subdivisions, &cur_subdivision);
+	}
 }

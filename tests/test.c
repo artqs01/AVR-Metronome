@@ -1,7 +1,7 @@
 #include <avr/interrupt.h>
 #include <avr/fuse.h>
 
-#include "metronome.h"
+#include "beep.h"
 #include "lcd_com.h"
 
 volatile uint8_t meter = 4;
@@ -47,7 +47,7 @@ int main()
 	{
 		if (RIGHT_BUTTON)
 		{
-			set_tempo(++bpm);
+			set_tempo(++bpm, 1);
 			lcd_move_cursor_on_address(0, 7);
 			lcd_printf("   ");
 			lcd_move_cursor_on_address(0, 7);
@@ -56,7 +56,7 @@ int main()
 		}
 		if (LEFT_BUTTON)
 		{
-			set_tempo(--bpm);
+			set_tempo(--bpm, 1);
 			lcd_move_cursor_on_address(0, 7);
 			lcd_printf("   ");
 			lcd_move_cursor_on_address(0, 7);
