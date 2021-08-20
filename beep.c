@@ -1,13 +1,13 @@
 #include <avr/interrupt.h>
 
 #include "beep.h"
-#include "lcd_com.h"
 
 static volatile beep_status bs = {.ticks_for_beep = F_CPU, .tick_count = 0, .beep_flag = 0};
 
 void metronome_init()
 {
-	DDRD = (1 << PD6);
+	DDRD |= (1 << PD6) | (1 << PD4);
+	DDRB &= ~(1 << PD5);
 
 	TCCR0A = (1 << WGM01);
 	TCCR0B = (1 << CS02) | (1 << CS00);

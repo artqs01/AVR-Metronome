@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 
 #include "beep.h"
+#include "encoder_control.h"
 
 FUSES = 
 {
@@ -38,5 +39,7 @@ int main()
 	while (1)
 	{
 		beep_check(time_signature, &beat, subdivisions, &cur_subdivision);
+		bpm += enc_move();
+		set_tempo(bpm, subdivisions);
 	}
 }

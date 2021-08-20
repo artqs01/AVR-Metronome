@@ -1,5 +1,5 @@
-#ifndef LCD_COM_H
-#define LCD_COM_H
+#ifndef LCD_CONTROL_H
+#define LCD_CONTROL_H
 
 #include <avr/io.h>
 

@@ -1,4 +1,4 @@
-#include "lcd_com.h"
+#include "lcd_control.h"
 
 #include <stdarg.h>
 #include <util/delay.h>
