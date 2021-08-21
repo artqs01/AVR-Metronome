@@ -15,3 +15,6 @@ program.elf: $(SOURCES)
 
 prog: program.elf
 	avrdude -c usbasp -p $(MCU) -Uflash:w:$^ -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m
+
+clean:
+	-rm -f program.elf

@@ -4,10 +4,10 @@
 #include <avr/io.h>
 
 #define BUZ_OUT 6
-#define LEFT_BUTTON PIND & (1 << 2)
-#define DOWN_BUTTON PIND & (1 << 3)
-#define UP_BUTTON PIND & (1 << 4)
-#define RIGHT_BUTTON PIND & (1 << 5)
+#define LEFT_BUTTON (!!(PIND & (1 << 2)))
+#define DOWN_BUTTON (!!(PIND & (1 << 3)))
+#define UP_BUTTON (!!(PIND & (1 << 4)))
+#define RIGHT_BUTTON (!!(PIND & (1 << 5)))
 
 #define TIMER1_START (TCCR1B |= (1 << CS12) | (1 << CS10))
 #define TIMER1_STOP  (TCCR1B &= ~((1 << CS12) | (1 << CS10)))

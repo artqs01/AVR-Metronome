@@ -10,8 +10,6 @@ int8_t enc_move()
     if (last_a != ENC_SIGNAL_A)
     {
         move_counter += (ENC_SIGNAL_A == ENC_SIGNAL_B) ? 1 : -1;
-        PORTD ^= (1 << PD5);
-        _delay_ms(200);
     }
 
     last_a = ENC_SIGNAL_A;

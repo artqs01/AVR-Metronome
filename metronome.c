@@ -1,7 +1,8 @@
 #include <avr/io.h>
 #include <avr/fuse.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
+#include <util/atomic.h>
 
 #include "beep.h"
 #include "encoder_control.h"
@@ -25,6 +26,7 @@ ISR(TIMER1_COMPA_vect)
 int main()
 {
 	uint16_t bpm = 60;
+	int8_t d_bpm = 0;
 
 	uint8_t time_signature = 4;
 	uint8_t beat = 0;
@@ -39,7 +41,14 @@ int main()
 	while (1)
 	{
 		beep_check(time_signature, &beat, subdivisions, &cur_subdivision);
-		bpm += enc_move();
-		set_tempo(bpm, subdivisions);
+		d_bpm += enc_move();
+		if (d_bpm)
+		{
+			bpm += d_bpm;
+			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+				set_tempo(bpm, subdivisions);
+			d_bpm = 0;
+		}
+		// set_tempo(bpm, subdivisions);
 	}
 }
