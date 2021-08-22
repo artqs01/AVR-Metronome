@@ -36,33 +36,33 @@ void isr_time_check()
 	}
 }
 
-void set_tempo(uint16_t bpm, uint8_t subdivisions)
+void set_tempo(time_properties *tp)
 {
-	bs.ticks_for_beep = F_CPU * 60 / (bpm * subdivisions);
+	bs.ticks_for_beep = F_CPU * 4 * 60ull / (tp->tempo * tp->subdivisions * tp->note_value);
 }
 
-void beep_check(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision)
+void beep_check(time_properties *tp)
 {
 	if (bs.beep_flag)
 	{
 		bs.beep_flag = 0;
-		beep(time_signature, beat, subdivisions, cur_subdivision);
+		beep(tp);
 	}
 }
 
-void beep(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision)
+void beep(time_properties *tp)
 {
-	if (subdivisions > 1 && *cur_subdivision)
+	if (tp->subdivisions > 1 && tp->subdivision_count)
 		OCR0A = 15;
 	else
 	{
-		OCR0A = *beat ? 11 : 7;
-		if (++*beat == time_signature)
-			*beat = 0;
+		OCR0A = tp->beat_count ? 11 : 7;
+		if (++tp->beat_count == tp->beats_per_measure)
+			tp->beat_count = 0;
 	}
 
-	if (++*cur_subdivision == subdivisions)
-			*cur_subdivision = 0;
+	if (++tp->subdivision_count == tp->subdivisions)
+			tp->subdivision_count = 0;
 
 	TCNT1 = 0;
 	TIMER1_START;

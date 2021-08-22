@@ -14,15 +14,25 @@
 
 typedef struct beep_status 
 {
-    uint32_t ticks_for_beep;
-    uint32_t tick_count;
+    uint64_t ticks_for_beep;
+    uint64_t tick_count;
     uint8_t beep_flag;
 } beep_status;
 
+typedef struct time_properties 
+{
+    uint8_t beats_per_measure;
+    uint8_t beat_count;
+    uint8_t note_value;
+    uint8_t subdivisions;
+    uint8_t subdivision_count;
+    uint16_t tempo;
+} time_properties;
+
 void metronome_init();
 void isr_time_check();
-void set_tempo(uint16_t bpm, uint8_t subdivisions);
-void beep_check(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision);
-void beep(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision);
+void set_tempo(time_properties *tp);
+void beep_check(time_properties *tp);
+void beep(time_properties *tp);
 
 #endif

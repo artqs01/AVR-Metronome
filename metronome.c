@@ -25,29 +25,23 @@ ISR(TIMER1_COMPA_vect)
 
 int main()
 {
-	uint16_t bpm = 60;
+	time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 2, .tempo = 60};
 	int8_t d_bpm = 0;
 
-	uint8_t time_signature = 4;
-	uint8_t beat = 0;
-
-	uint8_t subdivisions = 1;
-	uint8_t cur_subdivision = 0;
-
 	metronome_init();
-	set_tempo(bpm, subdivisions);
+	set_tempo(&tp);
 	sei();
 	
 	while (1)
 	{
-		beep_check(time_signature, &beat, subdivisions, &cur_subdivision);
-		d_bpm += enc_move();
-		if (d_bpm)
-		{
-			bpm += d_bpm;
-			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-				set_tempo(bpm, subdivisions);
-			d_bpm = 0;
-		}
+		beep_check(&tp);
+		// d_bpm += enc_move();
+		// if (d_bpm)
+		// {
+		// 	tp.tempo += d_bpm;
+		// 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		// 		set_tempo(&tp);
+		// 	d_bpm = 0;
+		// }
 	}
 }
