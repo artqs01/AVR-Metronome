@@ -7,7 +7,7 @@ static volatile beep_status bs = {.ticks_for_beep = F_CPU, .tick_count = 0, .bee
 void metronome_init()
 {
 	DDRD |= (1 << PD6) | (1 << PD4);
-	DDRB &= ~(1 << PD5);
+	DDRB &= ~((1 << PINB0) | (1 << PINB1) | (1 << PINB2));
 
 	TCCR0A = (1 << WGM01);
 	TCCR0B = (1 << CS02) | (1 << CS00);

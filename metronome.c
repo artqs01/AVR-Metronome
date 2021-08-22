@@ -49,6 +49,5 @@ int main()
 				set_tempo(bpm, subdivisions);
 			d_bpm = 0;
 		}
-		// set_tempo(bpm, subdivisions);
 	}
 }
