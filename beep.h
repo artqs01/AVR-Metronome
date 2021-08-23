@@ -12,12 +12,12 @@
 #define TIMER1_START (TCCR1B |= (1 << CS12) | (1 << CS10))
 #define TIMER1_STOP  (TCCR1B &= ~((1 << CS12) | (1 << CS10)))
 
-typedef struct beep_status 
+typedef struct beep_state
 {
-    uint64_t ticks_for_beep;
-    uint64_t tick_count;
+    uint32_t ticks_for_beep;
+    uint32_t tick_count;
     uint8_t beep_flag;
-} beep_status;
+} beep_state;
 
 typedef struct time_properties 
 {

@@ -1,28 +1,61 @@
 #include <util/delay.h>
+#include <util/atomic.h>
 
 #include "encoder_control.h"
 
+static volatile encoder_state es = {.last_clk = 0, .move_flag = 0, .move_count = 0, .last_move = 0, .speed_count = F_CPU};
+
 int8_t enc_move()
 {
-    static uint8_t last_a = 0;
-    static int8_t move_counter = 0;
+    if (es.last_clk != ENC_SIGNAL_A)
+        es.move_count += (ENC_SIGNAL_A == ENC_SIGNAL_B) ? 1 : -1;
 
-    if (last_a != ENC_SIGNAL_A)
-    {
-        move_counter += (ENC_SIGNAL_A == ENC_SIGNAL_B) ? 1 : -1;
-    }
+    es.last_clk = ENC_SIGNAL_A;
 
-    last_a = ENC_SIGNAL_A;
+    if (es.move_count > 1)
+    {
+        es.move_count = 0;
+        if (es.speed_count < ENCODER_MOVE_SPEED_LIMIT && es.last_move == 1)
+            return 2;
+        else
+        {
+            es.last_move = 1;
+            return 1;
+        }
+    }
+    else if (es.move_count < -1)
+    {
+        es.move_count = 0;
+        if (es.speed_count <= ENCODER_MOVE_SPEED_LIMIT && es.last_move == -1)
+            return -2;
+        else
+        {
+            es.last_move = -1;
+            return -1;
+        }
+    }
+    else
+    {
+        es.last_move = 0;
+        return 0;
+    }
+}
 
-    if (move_counter > 1)
+void enc_speed_calc_begin()
+{
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
     {
-        move_counter = 0;
-        return 1;
+        es.move_flag = 1;
+        es.speed_count = 0;
     }
-    else if (move_counter < -1)
+}
+
+void enc_speed_check()
+{
+    if(es.move_flag)
     {
-        move_counter = 0;
-        return -1;
+        es.speed_count += (OCR2A + 1) << 10;
+        if (es.speed_count > ENCODER_MOVE_SPEED_LIMIT)
+            es.move_flag = 0;
     }
-    else return 0;
 }

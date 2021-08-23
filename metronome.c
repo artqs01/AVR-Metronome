@@ -2,12 +2,11 @@
 #include <avr/fuse.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <util/atomic.h>
 
 #include "beep.h"
 #include "encoder_control.h"
 
-FUSES = 
+FUSES =
 {
     0xdf, 0xd1, 0xff
 };
@@ -15,6 +14,7 @@ FUSES =
 ISR(TIMER2_COMPA_vect)
 {
 	isr_time_check();
+	enc_speed_check();
 }
 
 ISR(TIMER1_COMPA_vect)
@@ -25,7 +25,7 @@ ISR(TIMER1_COMPA_vect)
 
 int main()
 {
-	time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 2, .tempo = 60};
+	time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 7, .tempo = 60};
 	int8_t d_bpm = 0;
 
 	metronome_init();
@@ -35,13 +35,13 @@ int main()
 	while (1)
 	{
 		beep_check(&tp);
-		// d_bpm += enc_move();
-		// if (d_bpm)
-		// {
-		// 	tp.tempo += d_bpm;
-		// 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-		// 		set_tempo(&tp);
-		// 	d_bpm = 0;
-		// }
+		d_bpm += enc_move();
+		if (d_bpm)
+		{
+			tp.tempo += d_bpm;
+			d_bpm = 0;
+			enc_speed_calc_begin();
+			set_tempo(&tp);
+		}
 	}
 }

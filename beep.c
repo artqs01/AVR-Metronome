@@ -1,8 +1,9 @@
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "beep.h"
 
-static volatile beep_status bs = {.ticks_for_beep = F_CPU, .tick_count = 0, .beep_flag = 0};
+static volatile beep_state bs = {.ticks_for_beep = F_CPU, .tick_count = 0, .beep_flag = 0};
 
 void metronome_init()
 {
@@ -38,7 +39,8 @@ void isr_time_check()
 
 void set_tempo(time_properties *tp)
 {
-	bs.ticks_for_beep = F_CPU * 4 * 60ull / (tp->tempo * tp->subdivisions * tp->note_value);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		bs.ticks_for_beep = F_CPU * 4 * 60ull / (tp->tempo * tp->subdivisions * tp->note_value);
 }
 
 void beep_check(time_properties *tp)
