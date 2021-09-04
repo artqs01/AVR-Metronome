@@ -17,7 +17,7 @@ ISR(TIMER1_COMPA_vect)
 	isr_beep_end();
 }
 
-volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60};
+volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60, .beat = 0, .cur_subdivision = 0};
 
 int main()
 {

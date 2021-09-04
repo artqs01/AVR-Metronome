@@ -48,20 +48,17 @@ void beep_config_update()
 
 void beep()
 {
-	static uint8_t beat = 0;
-	static uint8_t cur_subdivision = 0;
-
-	if (bc.subdivisions > 1 && cur_subdivision)
+	if (bc.subdivisions > 1 && bc.cur_subdivision)
 		OCR0A = 15;									// set Timer 0 register A value
 	else
 	{
-		OCR0A = beat ? 11 : 7;
-		if (++beat == bc.notes_per_measure)
-			beat = 0;
+		OCR0A = bc.beat ? 11 : 7;
+		if (++bc.beat == bc.notes_per_measure)
+			bc.beat = 0;
 	}
 
-	if (++cur_subdivision == bc.subdivisions)
-			cur_subdivision = 0;
+	if (++bc.cur_subdivision == bc.subdivisions)
+			bc.cur_subdivision = 0;
 
 	TCNT1 = 0;										// clear Timer 1 counter
 	TIMER1_START;

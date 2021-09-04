@@ -22,8 +22,10 @@ typedef struct beep_state
 typedef struct beep_config 
 {
     uint8_t notes_per_measure;
+    uint8_t beat;
     uint8_t note_value;
     uint8_t subdivisions;
+    uint8_t cur_subdivision;
     uint16_t tempo;
 } beep_config;
 
