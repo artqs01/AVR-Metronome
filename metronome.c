@@ -22,30 +22,15 @@ ISR(TIMER1_COMPA_vect)
 	TIMER1_STOP;
 }
 
+beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60};
+
 int main()
 {
-	uint16_t bpm = 60;
-	int8_t d_bpm = 0;
-
-	uint8_t time_signature = 4;
-	uint8_t beat = 0;
-
-	uint8_t subdivisions = 1;
-	uint8_t cur_subdivision = 0;
-
 	metronome_init();
-	set_tempo(bpm, subdivisions);
 	sei();
-	
+
 	while (1)
 	{
-		beep_check(time_signature, &beat, subdivisions, &cur_subdivision);
-		d_bpm += enc_move();
-		if (d_bpm)
-		{
-			bpm += d_bpm;
-			d_bpm = 0;
-				set_tempo(bpm, subdivisions);
-		}
+		beep_enc_value_control(&bc.tempo);
 	}
 }

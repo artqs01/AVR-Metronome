@@ -2,6 +2,7 @@
 #include <util/atomic.h>
 
 #include "beep.h"
+#include "encoder_control.h"
 
 static volatile beep_status bs = {.ticks_for_beep = F_CPU, .tick_count = 0, .beep_flag = 0};
 
@@ -37,28 +38,44 @@ void isr_time_check()
 	}
 }
 
-void set_tempo(uint16_t bpm, uint8_t subdivisions)
+void beep_config_update()
 {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-		bs.ticks_for_beep = F_CPU * 60 / (bpm * subdivisions);
+		bs.ticks_for_beep = F_CPU * 60ull * 4 / (bc.note_value * bc.tempo * bc.subdivisions);
 }
 
 void beep()
 {
-	if (subdivisions > 1 && *cur_subdivision)
+	static uint8_t beat = 0;
+	static uint8_t cur_subdivision = 0;
+
+	if (bc.subdivisions > 1 && cur_subdivision)
 		OCR0A = 15;
 	else
 	{
-		OCR0A = *beat ? 11 : 7;
-		if (++*beat == time_signature)
-			*beat = 0;
+		OCR0A = beat ? 11 : 7;
+		if (++beat == bc.notes_per_measure)
+			beat = 0;
 	}
 
-	if (++*cur_subdivision == subdivisions)
-			*cur_subdivision = 0;
+	if (++cur_subdivision == bc.subdivisions)
+			cur_subdivision = 0;
 
 	TCNT1 = 0;
 	TIMER1_START;
 	
 	TCCR0A |= (1 << COM0A0);
+}
+
+void beep_enc_value_control(uint16_t* parameter)
+{
+	static int8_t d_value = 0;
+
+	d_value += enc_move();
+		if (d_value)
+		{
+			*parameter += d_value;
+			d_value = 0;
+				beep_config_update();
+		}
 }

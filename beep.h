@@ -27,10 +27,13 @@ typedef struct beep_config
     uint16_t tempo;
 } beep_config;
 
+extern beep_config bc;
+
 void metronome_init();
 void isr_time_check();
-void set_tempo(uint16_t bpm, uint8_t subdivisions);
+void beep_config_update();
 void beep_check(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision);
-void beep(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision);
+void beep();
+void beep_enc_value_control(uint16_t* parameter);
 
 #endif
