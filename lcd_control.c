@@ -1,5 +1,6 @@
 #include "lcd_control.h"
 
+#include <stdio.h>
 #include <stdarg.h>
 #include <util/delay.h>
 

@@ -30,9 +30,9 @@ typedef struct time_properties
 } time_properties;
 
 void metronome_init();
-void isr_time_check();
-void set_tempo(time_properties *tp);
-void beep_check(time_properties *tp);
-void beep(time_properties *tp);
+void set_tempo(uint16_t bpm);
+void isr_beep_check();
+void beep();
+void isr_beep_end();
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "beep.h"
 #include "encoder_control.h"
+#include "lcd_control.h"
 
 FUSES =
 {
@@ -13,35 +14,32 @@ FUSES =
 
 ISR(TIMER2_COMPA_vect)
 {
-	isr_time_check();
-	enc_speed_check();
+	isr_beep_check();
 }
 
 ISR(TIMER1_COMPA_vect)
 {
-	TCCR0A &= ~(1 << COM0A0);
-	TIMER1_STOP;
+	isr_beep_end();
 }
 
 int main()
 {
-	time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 7, .tempo = 60};
+	uint16_t bpm = 60;
 	int8_t d_bpm = 0;
 
 	metronome_init();
-	set_tempo(&tp);
+	set_tempo(60);
+
 	sei();
 	
 	while (1)
 	{
-		beep_check(&tp);
 		d_bpm += enc_move();
 		if (d_bpm)
 		{
-			tp.tempo += d_bpm;
+			bpm += d_bpm;
 			d_bpm = 0;
-			enc_speed_calc_begin();
-			set_tempo(&tp);
+			set_tempo(bpm);
 		}
 	}
 }

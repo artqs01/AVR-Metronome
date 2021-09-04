@@ -13,32 +13,11 @@ int8_t enc_move()
     es.last_clk = ENC_SIGNAL_A;
 
     if (es.move_count > 1)
-    {
-        es.move_count = 0;
-        if (es.speed_count < ENCODER_MOVE_SPEED_LIMIT && es.last_move == 1)
-            return 2;
-        else
-        {
-            es.last_move = 1;
-            return 1;
-        }
-    }
+        return 1;
     else if (es.move_count < -1)
-    {
-        es.move_count = 0;
-        if (es.speed_count <= ENCODER_MOVE_SPEED_LIMIT && es.last_move == -1)
-            return -2;
-        else
-        {
-            es.last_move = -1;
-            return -1;
-        }
-    }
+        return -1;
     else
-    {
-        es.last_move = 0;
         return 0;
-    }
 }
 
 void enc_speed_calc_begin()
@@ -50,7 +29,7 @@ void enc_speed_calc_begin()
     }
 }
 
-void enc_speed_check()
+void isr_enc_speed_check()
 {
     if(es.move_flag)
     {

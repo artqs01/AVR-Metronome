@@ -5,10 +5,10 @@
 
 #define LCD_PORT PORTC
 
-#define D4 0
-#define D5 1
-#define D6 2
-#define D7 3
+#define D7 0
+#define D6 1
+#define D5 2
+#define D4 3
 #define E 4
 #define RS 5
 

@@ -20,6 +20,6 @@ typedef struct encoder_state
 
 int8_t enc_move();
 void enc_speed_calc_begin();
-void enc_speed_check();
+void isr_enc_speed_check();
 
 #endif
