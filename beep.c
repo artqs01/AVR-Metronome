@@ -30,7 +30,7 @@ void metronome_init()
 
 void isr_time_check()
 {
-	bs.ticks_for_beep += bs.tick_count;
+	bs.tick_count += (OCR2A << 10);
 	if (bs.tick_count >= bs.ticks_for_beep)
 	{
 		bs.tick_count -= bs.ticks_for_beep;

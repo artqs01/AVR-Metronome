@@ -7,8 +7,6 @@
 #define ENC_SIGNAL_A (!!(PINB & (1 << 1)))
 #define ENC_SIGNAL_B (!!(PINB & (1 << 2)))
 
-#define ENCODER_MOVE_SPEED_LIMIT F_CPU / 6
-
 int8_t enc_move();
 
 #endif
