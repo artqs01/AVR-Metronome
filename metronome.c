@@ -2,7 +2,6 @@
 #include <avr/fuse.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <util/atomic.h>
 
 #include "beep.h"
 #include "encoder_control.h"
@@ -45,10 +44,8 @@ int main()
 		if (d_bpm)
 		{
 			bpm += d_bpm;
-			ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-				set_tempo(bpm, subdivisions);
 			d_bpm = 0;
+				set_tempo(bpm, subdivisions);
 		}
-		// set_tempo(bpm, subdivisions);
 	}
 }

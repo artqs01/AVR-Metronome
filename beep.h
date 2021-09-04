@@ -19,6 +19,14 @@ typedef struct beep_status
     uint8_t beep_flag;
 } beep_status;
 
+typedef struct beep_config 
+{
+    uint8_t notes_per_measure;
+    uint8_t note_value;
+    uint8_t subdivisions;
+    uint16_t tempo;
+} beep_config;
+
 void metronome_init();
 void isr_time_check();
 void set_tempo(uint16_t bpm, uint8_t subdivisions);

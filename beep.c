@@ -1,4 +1,5 @@
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "beep.h"
 
@@ -32,25 +33,17 @@ void isr_time_check()
 	if (bs.tick_count >= bs.ticks_for_beep)
 	{
 		bs.tick_count -= bs.ticks_for_beep;
-		bs.beep_flag = 1;
+		beep();
 	}
 }
 
 void set_tempo(uint16_t bpm, uint8_t subdivisions)
 {
-	bs.ticks_for_beep = F_CPU * 60 / (bpm * subdivisions);
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		bs.ticks_for_beep = F_CPU * 60 / (bpm * subdivisions);
 }
 
-void beep_check(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision)
-{
-	if (bs.beep_flag)
-	{
-		bs.beep_flag = 0;
-		beep(time_signature, beat, subdivisions, cur_subdivision);
-	}
-}
-
-void beep(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision)
+void beep()
 {
 	if (subdivisions > 1 && *cur_subdivision)
 		OCR0A = 15;
