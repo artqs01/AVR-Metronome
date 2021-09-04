@@ -14,7 +14,7 @@ FUSES =
 
 ISR(TIMER2_COMPA_vect)
 {
-	isr_beep_check();
+	isr_time_check();
 }
 
 ISR(TIMER1_COMPA_vect)

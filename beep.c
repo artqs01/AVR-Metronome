@@ -5,7 +5,6 @@
 #include "encoder_control.h"
 
 static volatile beep_state bs = {.ticks_for_beep = F_CPU, .tick_count = 0};
-static volatile time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 1, .tempo = 60};
 
 void metronome_init()
 {
@@ -29,9 +28,9 @@ void metronome_init()
 	OCR2A = 19;
 }
 
-void set_tempo(uint16_t bpm)
+void isr_time_check()
 {
-    bs.tick_count += (OCR2A + 1) << 10;
+	bs.ticks_for_beep += bs.tick_count;
 	if (bs.tick_count >= bs.ticks_for_beep)
 	{
 		bs.tick_count -= bs.ticks_for_beep;
@@ -66,6 +65,12 @@ void beep()
 	TIMER1_START;
 	
 	TCCR0A |= (1 << COM0A0);
+}
+
+void isr_beep_end()
+{
+	TCCR0A &= ~(1 << COM0A0);
+	TIMER1_STOP;
 }
 
 void beep_enc_value_control(uint16_t* parameter)
