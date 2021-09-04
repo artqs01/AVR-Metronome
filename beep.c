@@ -2,6 +2,7 @@
 #include <util/atomic.h>
 
 #include "beep.h"
+#include "encoder_control.h"
 
 static volatile beep_state bs = {.ticks_for_beep = F_CPU, .tick_count = 0};
 static volatile time_properties tp = {.beat_count = 0, .beats_per_measure = 4, .note_value = 4, .subdivision_count = 0, .subdivisions = 1, .tempo = 60};
@@ -30,34 +31,36 @@ void metronome_init()
 
 void set_tempo(uint16_t bpm)
 {
-	tp.tempo = bpm;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-		bs.ticks_for_beep = F_CPU * 4 * 60ull / (tp.tempo * tp.subdivisions * tp.note_value);
-}
-
-void isr_beep_check()
-{
     bs.tick_count += (OCR2A + 1) << 10;
 	if (bs.tick_count >= bs.ticks_for_beep)
 	{
 		bs.tick_count -= bs.ticks_for_beep;
-		beep(tp);
+		beep();
 	}
+}
+
+void beep_config_update()
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		bs.ticks_for_beep = F_CPU * 60ull * 4 / (bc.note_value * bc.tempo * bc.subdivisions);
 }
 
 void beep()
 {
-	if (tp.subdivisions > 1 && tp.subdivision_count)
+	static uint8_t beat = 0;
+	static uint8_t cur_subdivision = 0;
+
+	if (bc.subdivisions > 1 && cur_subdivision)
 		OCR0A = 15;
 	else
 	{
-		OCR0A = tp.beat_count ? 11 : 7;
-		if (++tp.beat_count == tp.beats_per_measure)
-			tp.beat_count = 0;
+		OCR0A = beat ? 11 : 7;
+		if (++beat == bc.notes_per_measure)
+			beat = 0;
 	}
 
-	if (++tp.subdivision_count == tp.subdivisions)
-			tp.subdivision_count = 0;
+	if (++cur_subdivision == bc.subdivisions)
+			cur_subdivision = 0;
 
 	TCNT1 = 0;
 	TIMER1_START;
@@ -65,8 +68,15 @@ void beep()
 	TCCR0A |= (1 << COM0A0);
 }
 
-void isr_beep_end()
+void beep_enc_value_control(uint16_t* parameter)
 {
-	TCCR0A &= ~(1 << COM0A0);
-	TIMER1_STOP;
+	static int8_t d_value = 0;
+
+	d_value += enc_move();
+		if (d_value)
+		{
+			*parameter += d_value;
+			d_value = 0;
+				beep_config_update();
+		}
 }

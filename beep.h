@@ -29,10 +29,21 @@ typedef struct time_properties
     uint16_t tempo;
 } time_properties;
 
+typedef struct beep_config 
+{
+    uint8_t notes_per_measure;
+    uint8_t note_value;
+    uint8_t subdivisions;
+    uint16_t tempo;
+} beep_config;
+
+extern beep_config bc;
+
 void metronome_init();
-void set_tempo(uint16_t bpm);
-void isr_beep_check();
+void isr_time_check();
+void beep_config_update();
+void beep_check(uint8_t time_signature, uint8_t *beat, uint8_t subdivisions, uint8_t *cur_subdivision);
 void beep();
-void isr_beep_end();
+void beep_enc_value_control(uint16_t* parameter);
 
 #endif

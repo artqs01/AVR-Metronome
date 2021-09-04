@@ -22,24 +22,15 @@ ISR(TIMER1_COMPA_vect)
 	isr_beep_end();
 }
 
+beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60};
+
 int main()
 {
-	uint16_t bpm = 60;
-	int8_t d_bpm = 0;
-
 	metronome_init();
-	set_tempo(60);
-
 	sei();
-	
+
 	while (1)
 	{
-		d_bpm += enc_move();
-		if (d_bpm)
-		{
-			bpm += d_bpm;
-			d_bpm = 0;
-			set_tempo(bpm);
-		}
+		beep_enc_value_control(&bc.tempo);
 	}
 }
