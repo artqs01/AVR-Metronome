@@ -14,9 +14,16 @@ int8_t enc_move()
     last_clk = ENC_SIGNAL_A;
 
     if (move_count > 1)
+    {
+        move_count = 0;
         return 1;
+    }
+        
     else if (move_count < -1)
+    {
+        move_count = 0;
         return -1;
+    }
     else
         return 0;
 }
