@@ -1,7 +1,7 @@
+#include "encoder_control.h"
+
 #include <util/delay.h>
 #include <util/atomic.h>
-
-#include "encoder_control.h"
 
 int8_t enc_move()
 {
@@ -26,4 +26,17 @@ int8_t enc_move()
     }
     else
         return 0;
+}
+
+uint8_t enc_parameter_ctrl(volatile uint16_t* parameter)
+{
+	int8_t d_value = 0;
+
+	d_value += enc_move();
+	if (d_value)
+	{
+		*parameter += d_value;
+		return 1;
+	}
+	else return 0;
 }

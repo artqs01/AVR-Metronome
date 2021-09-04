@@ -51,7 +51,7 @@ void lcd_init()
 	lcd_write_byte(0, 0b1111);
 }
 
-void lcd_move_cursor_horizontally(int8_t shift_count)
+void lcd_mov_cur_x(int8_t shift_count)
 {
 	while(shift_count > 0)
 	{
@@ -65,7 +65,7 @@ void lcd_move_cursor_horizontally(int8_t shift_count)
 	}
 }
 
-void lcd_move_cursor_on_address(uint8_t y, uint8_t x)
+void lcd_mov_cur_xy(uint8_t y, uint8_t x)
 {
 	lcd_write_byte(0, (y ? 0xc0 : 0x80) | (x & 0x0f));
 }
@@ -79,6 +79,6 @@ void lcd_printf(const char *format, ...)
     vsnprintf(buffer, sizeof buffer, format, ap);
     va_end(ap);
 
-    for (char *sign = buffer; *sign; sign++)
-        lcd_write_byte(1, *sign);
+    for (char *c = buffer; *c; c++)
+        lcd_write_byte(1, *c);
 }

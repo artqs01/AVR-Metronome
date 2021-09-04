@@ -1,16 +1,11 @@
-#include <avr/io.h>
-#include <avr/fuse.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
 #include "beep.h"
 #include "encoder_control.h"
 #include "lcd_control.h"
 
-FUSES =
-{
-    0xdf, 0xd1, 0xff
-};
+#include <avr/io.h>
+#include <avr/fuse.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 
 ISR(TIMER2_COMPA_vect)
 {
@@ -22,7 +17,7 @@ ISR(TIMER1_COMPA_vect)
 	isr_beep_end();
 }
 
-beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60};
+volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60};
 
 int main()
 {
@@ -31,6 +26,7 @@ int main()
 
 	while (1)
 	{
-		beep_enc_value_control(&bc.tempo);
+		if (enc_parameter_ctrl(&bc.tempo))
+			beep_config_update();
 	}
 }

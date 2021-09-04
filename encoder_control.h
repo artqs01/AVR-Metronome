@@ -8,5 +8,6 @@
 #define ENC_SIGNAL_B (!!(PINB & (1 << 2)))
 
 int8_t enc_move();
+uint8_t enc_parameter_ctrl(volatile uint16_t* parameter);
 
 #endif

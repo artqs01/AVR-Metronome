@@ -1,31 +1,31 @@
-#include <avr/interrupt.h>
-#include <util/atomic.h>
-
 #include "beep.h"
 #include "encoder_control.h"
+
+#include <avr/interrupt.h>
+#include <util/atomic.h>
 
 static volatile beep_state bs = {.ticks_for_beep = F_CPU, .tick_count = 0};
 
 void metronome_init()
 {
-	DDRD |= (1 << PD6) | (1 << PD5);
-	DDRB &= ~((1 << PINB0) | (1 << PINB1) | (1 << PINB2));
+	DDRD |= (1 << PD6) | (1 << PD5);							// set output ports up
+	DDRB &= ~((1 << PINB0) | (1 << PINB1) | (1 << PINB2));		// set input ports up
 
 	TCCR0A = (1 << WGM01);
-	TCCR0B = (1 << CS02) | (1 << CS00);
-	OCR0A = 15;
+	TCCR0B = (1 << CS02) | (1 << CS00);							// set Timer 0 up (clear on compare match)
+	OCR0A = 15;													// set Timer 0 register A value
 
 	TCCR1A = 0;
 	TCCR1C = 0;
-	TCCR1B = (1 << WGM12);
-	OCR1A = 700;
-	TIMSK1 |= (1 << OCIE1A);
+	TCCR1B = (1 << WGM12);										// set Timer 1 up (clear on compare match)
+	OCR1A = 700;												// set Timer 1 register A value
+	TIMSK1 |= (1 << OCIE1A);									// interrupt enable for timer 1
 
 	TCCR2A = (1 << WGM21);
-	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);
-	TIMSK2 = (1 << OCIE2A);
+	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);			// set Timer 2 up (clear on compare match)
+	TIMSK2 = (1 << OCIE2A);										// interrupt enable for timer 2
 
-	OCR2A = 19;
+	OCR2A = 19;													// set Timer 2 register A value
 }
 
 void isr_time_check()
@@ -41,7 +41,9 @@ void isr_time_check()
 void beep_config_update()
 {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
 		bs.ticks_for_beep = F_CPU * 60ull * 4 / (bc.note_value * bc.tempo * bc.subdivisions);
+	}
 }
 
 void beep()
@@ -50,7 +52,7 @@ void beep()
 	static uint8_t cur_subdivision = 0;
 
 	if (bc.subdivisions > 1 && cur_subdivision)
-		OCR0A = 15;
+		OCR0A = 15;									// set Timer 0 register A value
 	else
 	{
 		OCR0A = beat ? 11 : 7;
@@ -61,27 +63,14 @@ void beep()
 	if (++cur_subdivision == bc.subdivisions)
 			cur_subdivision = 0;
 
-	TCNT1 = 0;
+	TCNT1 = 0;										// clear Timer 1 counter
 	TIMER1_START;
 	
-	TCCR0A |= (1 << COM0A0);
+	TCCR0A |= (1 << COM0A0);						// enable "toggle output on compare match" for OCR1A output
 }
 
 void isr_beep_end()
 {
-	TCCR0A &= ~(1 << COM0A0);
+	TCCR0A &= ~(1 << COM0A0);						// disable "toggle output on compare match" for OCR1A output
 	TIMER1_STOP;
-}
-
-void beep_enc_value_control(uint16_t* parameter)
-{
-	static int8_t d_value = 0;
-
-	d_value += enc_move();
-		if (d_value)
-		{
-			*parameter += d_value;
-			d_value = 0;
-				beep_config_update();
-		}
 }
