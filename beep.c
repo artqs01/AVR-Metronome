@@ -8,24 +8,24 @@ static volatile beep_state bs = {.ticks_for_beep = F_CPU, .tick_count = 0};
 
 void metronome_init()
 {
-	DDRD |= (1 << PD6) | (1 << PD5);							// set output ports up
-	DDRB &= ~((1 << PINB0) | (1 << PINB1) | (1 << PINB2));		// set input ports up
+	DDRD |= (1 << PD6) | (1 << PD5);                            // set output ports up
+	DDRB &= ~((1 << PINB0) | (1 << PINB1) | (1 << PINB2));      // set input ports up
 
 	TCCR0A = (1 << WGM01);
-	TCCR0B = (1 << CS02) | (1 << CS00);							// set Timer 0 up (clear on compare match)
-	OCR0A = 15;													// set Timer 0 register A value
+	TCCR0B = (1 << CS02) | (1 << CS00);                         // set Timer 0 up (clear on compare match)
+	OCR0A = 15;                                                 // set Timer 0 register A value
 
 	TCCR1A = 0;
 	TCCR1C = 0;
-	TCCR1B = (1 << WGM12);										// set Timer 1 up (clear on compare match)
-	OCR1A = 700;												// set Timer 1 register A value
-	TIMSK1 |= (1 << OCIE1A);									// interrupt enable for timer 1
+	TCCR1B = (1 << WGM12);                                      // set Timer 1 up (clear on compare match)
+	OCR1A = 700;                                                // set Timer 1 register A value
+	TIMSK1 |= (1 << OCIE1A);                                    // interrupt enable for timer 1
 
 	TCCR2A = (1 << WGM21);
-	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);			// set Timer 2 up (clear on compare match)
-	TIMSK2 = (1 << OCIE2A);										// interrupt enable for timer 2
+	TCCR2B = (1 << CS22) | (1 << CS21) | (1 << CS20);           // set Timer 2 up (clear on compare match)
+	TIMSK2 = (1 << OCIE2A);                                     // interrupt enable for timer 2
 
-	OCR2A = 19;													// set Timer 2 register A value
+	OCR2A = 19;                                                 // set Timer 2 register A value
 }
 
 void isr_time_check()
@@ -49,7 +49,7 @@ void beep_config_update()
 void beep()
 {
 	if (bc.subdivisions > 1 && bc.cur_subdivision)
-		OCR0A = 15;									// set Timer 0 register A value
+		OCR0A = 15;                                 // set Timer 0 register A value
 	else
 	{
 		OCR0A = bc.beat ? 11 : 7;
@@ -60,14 +60,14 @@ void beep()
 	if (++bc.cur_subdivision == bc.subdivisions)
 			bc.cur_subdivision = 0;
 
-	TCNT1 = 0;										// clear Timer 1 counter
+	TCNT1 = 0;                                      // clear Timer 1 counter
 	TIMER1_START;
 	
-	TCCR0A |= (1 << COM0A0);						// enable "toggle output on compare match" for OCR1A output
+	TCCR0A |= (1 << COM0A0);                        // enable "toggle output on compare match" for OCR1A output
 }
 
 void isr_beep_end()
 {
-	TCCR0A &= ~(1 << COM0A0);						// disable "toggle output on compare match" for OCR1A output
+	TCCR0A &= ~(1 << COM0A0);                       // disable "toggle output on compare match" for OCR1A output
 	TIMER1_STOP;
 }
