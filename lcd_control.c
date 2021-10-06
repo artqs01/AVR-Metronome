@@ -65,7 +65,7 @@ void lcd_mov_cur_x(int8_t shift_count)
 	}
 }
 
-void lcd_mov_cur_xy(uint8_t y, uint8_t x)
+void lcd_mov_cur_xy(uint8_t x, uint8_t y)
 {
 	lcd_write_byte(0, (y ? 0xc0 : 0x80) | (x & 0x0f));
 }

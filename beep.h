@@ -12,9 +12,13 @@
 #define TIMER1_START (TCCR1B |= (1 << CS12) | (1 << CS10))
 #define TIMER1_STOP  (TCCR1B &= ~((1 << CS12) | (1 << CS10)))
 
+#define LOW_BEEP_PITCH 15
+#define MED_BEEP_PITCH 11
+#define HIGH_BEEP_PITCH 7
+
 typedef struct beep_state
 {
-    uint32_t ticks_for_beep;
+    uint32_t ticks_per_beep;
     uint32_t tick_count;
     uint8_t beep_flag;
 } beep_state;

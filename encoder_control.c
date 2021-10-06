@@ -30,9 +30,8 @@ int8_t enc_move()
 
 uint8_t enc_parameter_ctrl(volatile uint16_t* parameter)
 {
-	int8_t d_value = 0;
+	int8_t d_value = enc_move();
 
-	d_value += enc_move();
 	if (d_value)
 	{
 		*parameter += d_value;

@@ -5,13 +5,13 @@
 
 #define LCD_PORT PORTC
 
-#define E_IN 4
-#define RS 5
+#define E_PIN 4
+#define RS_PIN 5
 
-#define RS_LOW LCD_PORT &= ~(1 << RS)
-#define RS_HIGH LCD_PORT |= (1 << RS)
-#define E_LOW LCD_PORT &= ~(1 << E_IN)
-#define E_HIGH LCD_PORT |= (1 << E_IN)
+#define RS_LOW LCD_PORT &= ~(1 << RS_PIN)
+#define RS_HIGH LCD_PORT |= (1 << RS_PIN)
+#define E_LOW LCD_PORT &= ~(1 << E_PIN)
+#define E_HIGH LCD_PORT |= (1 << E_PIN)
 
 void lcd_write_4bit(uint8_t rs, uint8_t data);
 void lcd_write_byte(uint8_t rs, uint8_t data);
