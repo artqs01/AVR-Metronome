@@ -18,19 +18,19 @@
 
 typedef struct beep_state
 {
-    uint32_t ticks_per_beep;
-    uint32_t tick_count;
-    uint8_t beep_flag;
+	uint32_t ticks_for_beep;
+	uint32_t tick_count;
+	uint8_t beep_flag;
 } beep_state;
 
 typedef struct beep_config 
 {
-    uint8_t notes_per_measure;
-    uint8_t beat;
-    uint8_t note_value;
-    uint8_t subdivisions;
-    uint8_t cur_subdivision;
-    uint16_t tempo;
+	uint8_t notes_per_measure;
+	uint8_t beat;
+	uint8_t note_value;
+	uint8_t subdivisions;
+	uint8_t cur_subdivision;
+	uint16_t tempo;
 } beep_config;
 
 extern volatile beep_config bc;

@@ -74,11 +74,11 @@ void lcd_printf(const char *format, ...)
 {
 	char buffer[16];
 
-    va_list ap;
-    va_start(ap, format);
-    vsnprintf(buffer, sizeof buffer, format, ap);
-    va_end(ap);
+	va_list ap;
+	va_start(ap, format);
+	vsnprintf(buffer, sizeof buffer, format, ap);
+	va_end(ap);
 
-    for (char *c = buffer; *c; c++)
-        lcd_write_byte(1, *c);
+	for (char *c = buffer; *c; c++)
+		lcd_write_byte(1, *c);
 }
