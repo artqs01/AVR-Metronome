@@ -2,6 +2,7 @@
 #define BEEP_H
 
 #include <avr/io.h>
+#include <inttypes.h>
 
 #define BUZ_OUT 6
 #define LEFT_BUTTON (!!(PIND & (1 << 2)))
@@ -18,7 +19,7 @@
 
 typedef struct beep_state
 {
-	uint32_t ticks_for_beep;
+	uint32_t ticks_per_beep;
 	uint32_t tick_count;
 	uint8_t beep_flag;
 } beep_state;

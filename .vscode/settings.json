@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "interrupt.h": "c",
-        "lcd_com.h": "c",
-        "encoder_control.h": "c"
-    }
-}

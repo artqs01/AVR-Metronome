@@ -1,6 +1,7 @@
 #include "beep.h"
 #include "encoder_control.h"
 #include "lcd_control.h"
+#include "uart_com.h"
 
 #include <avr/io.h>
 #include <avr/fuse.h>
@@ -17,16 +18,18 @@ ISR(TIMER1_COMPA_vect)
 	isr_beep_end();
 }
 
-volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 60, .beat = 0, .cur_subdivision = 0};
+volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 120, .beat = 0, .cur_subdivision = 0};
 
 int main()
 {
 	metronome_init();
+	uart_init();
 	sei();
-
 	while (1)
 	{
-		if (enc_parameter_ctrl(&bc.tempo))
-			beep_config_update();
+		//if (enc_parameter_ctrl(&bc.tempo))
+		//	beep_config_update();
+		_delay_ms(500);
+		uart_printf("dupa\n");
 	}
 }

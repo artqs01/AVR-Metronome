@@ -4,7 +4,7 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 
-static volatile beep_state bs = {.ticks_per_beep = F_CPU, .tick_count = 0};
+static volatile beep_state bs = {.ticks_per_beep = F_CPU * 0.5f, .tick_count = 0};
 
 void metronome_init()
 {
