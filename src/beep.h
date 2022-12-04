@@ -34,8 +34,6 @@ typedef struct beep_config
 	uint16_t tempo;
 } beep_config;
 
-extern volatile beep_config bc;
-
 void metronome_init();
 void isr_time_check();
 void beep_config_update();
