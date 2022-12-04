@@ -4,7 +4,7 @@
 #include <avr/io.h>
 #include <inttypes.h>
 
-#define BUZ_OUT 6
+#define BEEP_OUT 6
 #define LEFT_BUTTON (!!(PIND & (1 << 2)))
 #define DOWN_BUTTON (!!(PIND & (1 << 3)))
 #define UP_BUTTON (!!(PIND & (1 << 4)))
@@ -33,6 +33,8 @@ typedef struct beep_config
 	uint8_t cur_subdivision;
 	uint16_t tempo;
 } beep_config;
+
+extern volatile beep_config bc;
 
 void metronome_init();
 void isr_time_check();

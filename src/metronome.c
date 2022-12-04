@@ -22,9 +22,7 @@ int main()
 {
 	metronome_init();
 	uart_init();
-	sei();
-	volatile beep_config bc =
-	{
+	bc = (struct beep_config) {
 		.notes_per_measure = 4,
 		.note_value = 4,
 		.subdivisions = 1,
@@ -32,6 +30,7 @@ int main()
 		.beat = 0,
 		.cur_subdivision = 0
 	};
+	sei();
 	while (1)
 	{
 		if (enc_parameter_ctrl(&bc.tempo) > 0)
