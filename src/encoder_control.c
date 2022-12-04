@@ -1,4 +1,5 @@
 #include "encoder_control.h"
+#include "uart_com.h"
 
 #include <util/delay.h>
 #include <util/atomic.h>

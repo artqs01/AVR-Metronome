@@ -18,18 +18,25 @@ ISR(TIMER1_COMPA_vect)
 	isr_beep_end();
 }
 
-volatile beep_config bc = {.notes_per_measure = 4, .note_value = 4, .subdivisions = 1, .tempo = 120, .beat = 0, .cur_subdivision = 0};
-
 int main()
 {
 	metronome_init();
 	uart_init();
 	sei();
+	volatile beep_config bc =
+	{
+		.notes_per_measure = 4,
+		.note_value = 4,
+		.subdivisions = 1,
+		.tempo = 120,
+		.beat = 0,
+		.cur_subdivision = 0
+	};
 	while (1)
 	{
-		//if (enc_parameter_ctrl(&bc.tempo))
-		//	beep_config_update();
-		_delay_ms(500);
-		uart_printf("dupa\n");
+		if (enc_parameter_ctrl(&bc.tempo) > 0)
+		{
+			beep_config_update();
+		}
 	}
 }
